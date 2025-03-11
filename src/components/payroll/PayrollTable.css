@@ -1,0 +1,34 @@
+.payroll-table-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.payroll-table-header {
+  margin-bottom: 20px;
+}
+
+.payroll-table-filters {
+  margin-bottom: 20px;
+}
+
+.MuiTableHead-root th {
+  font-weight: bold;
+  color: #333;
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(67, 97, 238, 0.04);
+}
+
+@media (max-width: 768px) {
+  .payroll-table-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .payroll-table-filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+} 

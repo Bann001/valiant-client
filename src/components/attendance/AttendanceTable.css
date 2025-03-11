@@ -1,0 +1,29 @@
+.attendance-table-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.attendance-table-header {
+  margin-bottom: 20px;
+}
+
+.MuiTableHead-root th {
+  font-weight: bold;
+  color: #333;
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(67, 97, 238, 0.04);
+}
+
+@media (max-width: 768px) {
+  .attendance-table-container {
+    padding: 12px;
+  }
+  
+  .attendance-table-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+} 

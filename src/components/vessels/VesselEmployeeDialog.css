@@ -1,0 +1,19 @@
+.vessel-employee-dialog .MuiDialogTitle-root {
+  padding: 16px 24px;
+}
+
+.vessel-employee-dialog .MuiDialogContent-root {
+  padding: 20px 24px;
+}
+
+.vessel-employee-dialog .MuiDialogActions-root {
+  padding: 16px 24px;
+}
+
+@media (max-width: 600px) {
+  .vessel-employee-dialog .MuiDialogTitle-root,
+  .vessel-employee-dialog .MuiDialogContent-root,
+  .vessel-employee-dialog .MuiDialogActions-root {
+    padding: 12px 16px;
+  }
+} 

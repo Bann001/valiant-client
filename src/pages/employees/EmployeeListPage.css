@@ -1,0 +1,11 @@
+.employee-list-page {
+  padding: 16px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 64px);
+}
+
+@media (max-width: 768px) {
+  .employee-list-page {
+    padding: 8px;
+  }
+} 

@@ -1,0 +1,49 @@
+.sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  color: white;
+}
+
+.sidebar-header {
+  min-height: 64px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.sidebar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Active menu item */
+.sidebar .active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-right: 4px solid white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .sidebar {
+    width: 0;
+    overflow: hidden;
+  }
+  
+  .sidebar.open {
+    width: 240px;
+  }
+} 

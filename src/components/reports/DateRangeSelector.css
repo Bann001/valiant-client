@@ -1,0 +1,16 @@
+.reports-date-range-selector {
+  margin-bottom: 20px;
+}
+
+.reports-date-range-selector .MuiButton-root {
+  text-transform: none;
+  font-weight: normal;
+}
+
+@media (max-width: 768px) {
+  .reports-date-range-selector .MuiBox-root {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+} 

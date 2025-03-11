@@ -1,0 +1,11 @@
+.vessel-form-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .vessel-form-container {
+    padding: 16px;
+  }
+} 

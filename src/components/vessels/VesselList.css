@@ -1,0 +1,34 @@
+.vessel-list-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.vessel-list-header {
+  margin-bottom: 20px;
+}
+
+.vessel-list-filters {
+  margin-bottom: 20px;
+}
+
+.MuiTableHead-root th {
+  font-weight: bold;
+  color: #333;
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(67, 97, 238, 0.04);
+}
+
+@media (max-width: 768px) {
+  .vessel-list-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .vessel-list-filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+} 

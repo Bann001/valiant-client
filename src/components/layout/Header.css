@@ -1,0 +1,22 @@
+.header-search {
+  border-radius: 20px;
+  background-color: white;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.header-search input {
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .header-search {
+    max-width: 150px;
+  }
+} 
