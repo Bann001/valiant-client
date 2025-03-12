@@ -1,6 +1,7 @@
 import axios from 'axios';
+import config from '../config';
 
-const API_URL = 'http://localhost:5000/api/reports';
+const API_URL = `${config.API_BASE_URL}/reports`;
 
 // Get report summary
 export const getReportSummary = async (startDate, endDate) => {

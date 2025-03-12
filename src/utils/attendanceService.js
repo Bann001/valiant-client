@@ -1,6 +1,7 @@
 import axios from 'axios';
+import config from '../config';
 
-const API_URL = 'http://localhost:5000/api/attendance';
+const API_URL = `${config.API_BASE_URL}/attendance`;
 
 // Get attendance records by date range and vessel
 export const getAttendanceByDateRange = async (startDate, endDate, vessel = '') => {

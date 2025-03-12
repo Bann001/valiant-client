@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getAuthHeader } from './authService';
+import config from '../config';
 
-const API_URL = 'http://localhost:5000/api/vessels';
+const API_URL = `${config.API_BASE_URL}/vessels`;
 
 // Get all vessels
 export const getVessels = async () => {

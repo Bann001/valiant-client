@@ -1,6 +1,7 @@
 import axios from 'axios';
+import config from '../config';
 
-const API_URL = 'http://localhost:5000/api/dashboard';
+const API_URL = `${config.API_BASE_URL}/dashboard`;
 
 // Get dashboard statistics
 export const getDashboardStats = async () => {
