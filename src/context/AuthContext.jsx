@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 export const AuthContext = createContext();
 
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     const loadUser = async () => {
       if (token) {
         try {
-          const res = await axios.get('http://localhost:5000/api/users/me');
+          const res = await axios.get(`${config.API_BASE_URL}/users/me`);
           setUser(res.data.data);
           setIsAuthenticated(true);
         } catch (err) {
@@ -45,7 +46,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:5000/api/users/login', {
+      console.log('Attempting login with API URL:', `${config.API_BASE_URL}/users/login`);
+      const res = await axios.post(`${config.API_BASE_URL}/users/login`, {
         email,
         password
       });
@@ -55,6 +57,7 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       return true;
     } catch (err) {
+      console.error('Login error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Invalid credentials');
       return false;
     } finally {
