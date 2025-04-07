@@ -20,7 +20,8 @@ export const login = async (email, password) => {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': 'http://o0soo4sg0k40s44k0ccwcksw.88.198.171.23.sslip.io'
       }
     });
     
