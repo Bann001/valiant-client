@@ -132,7 +132,7 @@ const AppRoutes = () => {
 function App() {
   return (
     <AuthProvider>
-      <Router basename="/valiant">
+      <Router>
         <AppRoutes />
       </Router>
     </AuthProvider>
