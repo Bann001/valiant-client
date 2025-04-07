@@ -21,6 +21,7 @@ import {
 } from '@mui/icons-material';
 import axios from 'axios';
 import './LoginPage.css';
+import config from '../../config';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -53,16 +54,20 @@ const LoginPage = () => {
     try {
       console.log('Submitting login with:', formData);
       
-      // Direct API call to avoid any issues with the auth service
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${config.API_BASE_URL}/auth/login`, {
         email: formData.email,
         password: formData.password
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
       });
       
       console.log('Login response:', response.data);
       
       if (response.data.success) {
-        // Store token in localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         navigate('/dashboard');

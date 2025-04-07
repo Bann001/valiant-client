@@ -46,10 +46,16 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
-      console.log('Attempting login with API URL:', `${config.API_BASE_URL}/users/login`);
-      const res = await axios.post(`${config.API_BASE_URL}/users/login`, {
+      console.log('Attempting login with API URL:', `${config.API_BASE_URL}/auth/login`);
+      const res = await axios.post(`${config.API_BASE_URL}/auth/login`, {
         email,
         password
+      }, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
       });
 
       localStorage.setItem('token', res.data.token);

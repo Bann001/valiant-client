@@ -19,9 +19,11 @@ export const login = async (email, password) => {
     }, {
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
     });
+    
     console.log('Login response:', response.data);
     
     if (response.data.success) {
@@ -36,7 +38,8 @@ export const login = async (email, password) => {
       message: error.message,
       response: error.response?.data,
       status: error.response?.status,
-      url: `${API_URL}/auth/login`
+      url: `${API_URL}/auth/login`,
+      headers: error.response?.headers
     });
     throw error;
   }
