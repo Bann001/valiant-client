@@ -21,6 +21,7 @@ import './EmployeeForm.css';
 const initialFormState = {
   firstName: '',
   lastName: '',
+  employeeId: '',
   email: '',
   phone: '',
   department: '',
@@ -165,6 +166,7 @@ const EmployeeForm = ({ employee = null, onSubmit, onCancel }) => {
     try {
       // Create employee data object
       const employeeData = {
+        employeeId: formData.employeeId.trim(),
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim(),

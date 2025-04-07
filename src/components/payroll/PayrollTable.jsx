@@ -185,6 +185,7 @@ const PayrollTable = ({ payrollData, vessels, onGenerateVoucher, onVesselChange 
                   <TableCell component="th" scope="row">
                     {record.employeeId}
                   </TableCell>
+                  <TableCell>{record.employee_id}</TableCell>
                   <TableCell>{record.employeeName}</TableCell>
                   <TableCell>{record.position}</TableCell>
                   <TableCell>{`₱ ${record.rate.toFixed(2)}`}</TableCell>

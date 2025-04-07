@@ -67,7 +67,7 @@ const EmployeeList = ({ employees, onEdit, onDelete }) => {
 
   // Filter employees based on search term
   const filteredEmployees = employees.filter(employee => {
-    const fullName = `${employee.firstName} ${employee.lastName}`.toLowerCase();
+    const fullName = `${employee.employee_id} - ${employee.firstName} ${employee.lastName}`.toLowerCase();
     const position = employee.position ? employee.position.toLowerCase() : '';
     const search = searchTerm.toLowerCase();
     
@@ -125,7 +125,7 @@ const EmployeeList = ({ employees, onEdit, onDelete }) => {
             {paginatedEmployees.length > 0 ? (
               paginatedEmployees.map((employee) => (
                 <TableRow key={employee._id}>
-                  <TableCell>{`${employee.firstName} ${employee.lastName}`}</TableCell>
+                  <TableCell>{`${employee.employee_id} - ${employee.firstName} ${employee.lastName}`}</TableCell>
                   <TableCell>{employee.position}</TableCell>
                   <TableCell>{employee.department?.name || 'N/A'}</TableCell>
                   <TableCell>{employee.email}</TableCell>

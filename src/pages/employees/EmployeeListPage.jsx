@@ -85,12 +85,15 @@ const EmployeeListPage = () => {
         </Box>
         
         {loading ? (
-          <Loading message="Loading employees..." />
+          <Loading message="Validating employees..." />
         ) : error ? (
           <Alert severity="error">{error}</Alert>
         ) : (
           <EmployeeList 
-            employees={employees} 
+            employees={employees.map(emp => ({
+              ...emp,
+              displayName: `${emp.employeeId || 'N/A'} - ${emp.name}`
+            }))} 
             onEdit={handleEdit} 
             onDelete={handleDelete} 
           />
@@ -115,4 +118,4 @@ const EmployeeListPage = () => {
   );
 };
 
-export default EmployeeListPage; 
+export default EmployeeListPage;

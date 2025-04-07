@@ -103,11 +103,24 @@ const PayrollPage = () => {
             endDate: endDate?.toISOString()
           });
         }
-        
+    
+        // Ensure payroll data is set correctly
         setPayrolls(data);
       } catch (err) {
         console.error('Error fetching payroll data:', err);
         setError('Failed to fetch payroll data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchEmployeePayrolls = async (employeeId) => {
+      try {
+        setLoading(true);
+        const data = await getPayrolls({ employeeId });
+        setPayrolls(data);
+      } catch (err) {
+        setError('Error fetching payroll for employee');
       } finally {
         setLoading(false);
       }

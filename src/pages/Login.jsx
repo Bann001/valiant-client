@@ -46,7 +46,7 @@ const Login = () => {
       <div className="login-left">
         <div className="company-info">
           <div className="company-logo">
-            <img src="/ship-icon.png" alt="Valiant Allied Services Inc." />
+            <img src="src/assets/valiant.png" alt="Valiant Allied Services Inc." />
           </div>
           <h1>Valiant Allied Services Inc.</h1>
         </div>
