@@ -1,66 +1,55 @@
 import axios from 'axios';
 import config from '../config';
 
-const API_URL = config.API_BASE_URL;
-
 // Configure axios defaults
-axios.defaults.withCredentials = true;
-axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.baseURL = config.API_BASE_URL;
+axios.defaults.withCredentials = config.withCredentials;
+axios.defaults.headers.common = {
+  ...axios.defaults.headers.common,
+  ...config.headers
+};
 
 // Login user
 export const login = async (email, password) => {
   try {
-    console.log('Attempting login with:', { email, password });
-    console.log('Login URL:', `${API_URL}/auth/login`);
-    
-    const response = await axios.post(`${API_URL}/auth/login`, {
+    console.log('Attempting login...');
+    const response = await axios.post('/auth/login', {
       email,
       password
-    }, {
-      withCredentials: true,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Access-Control-Allow-Origin': 'http://o0soo4sg0k40s44k0ccwcksw.88.198.171.23.sslip.io'
-      }
     });
     
-    console.log('Login response:', response.data);
-    
     if (response.data.success) {
-      // Store token in localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      // Set token in axios defaults for subsequent requests
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
     }
     
     return response.data;
   } catch (error) {
-    console.error('Login error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-      url: `${API_URL}/auth/login`,
-      headers: error.response?.headers
-    });
+    console.error('Login error:', error.response?.data || error.message);
     throw error;
   }
+};
+
+// Check if user is authenticated
+export const isAuthenticated = () => {
+  const token = localStorage.getItem('token');
+  return !!token;
 };
 
 // Logout user
 export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  delete axios.defaults.headers.common['Authorization'];
 };
 
 // Get current user
 export const getCurrentUser = () => {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
-};
-
-// Check if user is authenticated
-export const isAuthenticated = () => {
-  return localStorage.getItem('token') ? true : false;
 };
 
 // Get auth header
