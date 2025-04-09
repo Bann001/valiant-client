@@ -1,97 +1,48 @@
 import { useState, useEffect } from 'react';
-import { Box, Alert, Snackbar } from '@mui/material';
+import { Box, Alert, Snackbar, TextField } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Layout from '../../components/layout/Layout';
-import DateRangeSelector from '../../components/attendance/DateRangeSelector';
 import AttendanceTable from '../../components/attendance/AttendanceTable';
 import AttendanceEditDialog from '../../components/attendance/AttendanceEditDialog';
 import Loading from '../../components/layout/Loading';
-// Import services when needed
-// import { 
-//   getAttendanceByDateRange, 
-//   updateAttendance, 
-//   saveBulkAttendance, 
-//   exportAttendance 
-// } from '../../utils/attendanceService';
-// import { format } from 'date-fns';
+import { getAttendanceByDateRange, updateAttendance } from '../../utils/attendanceService';
+import { format } from 'date-fns';
 import './AttendancePage.css';
 
 const AttendancePage = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [dateRange, setDateRange] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [vessel, setVessel] = useState('');
+  const [selectedVessel, setSelectedVessel] = useState('all');
   const [editRecord, setEditRecord] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
-
-  useEffect(() => {
-    fetchAttendanceData();
-  }, [startDate, endDate, vessel]);
+  const vessels = ['Vessel 1', 'Vessel 2', 'Vessel 3']; // Replace with actual vessel data
 
   const fetchAttendanceData = async () => {
     try {
       setLoading(true);
-      
-      // For demo purposes, we'll use mock data
-      // In a production environment, uncomment the following line
-      // const data = await getAttendanceByDateRange(startDate, endDate, vessel);
-      
-      // Mock data
-      const mockData = [
-        {
-          employeeId: '000100',
-          employeeName: 'Emilia De Rothschild',
-          position: 'Admin',
-          day: true,
-          night: false,
-          otDay: false,
-          otNight: false,
-          np: false
-        },
-        {
-          employeeId: '000200',
-          employeeName: 'Aisha Garcia',
-          position: 'Fighter',
-          day: true,
-          night: true,
-          otDay: false,
-          otNight: false,
-          np: false
-        },
-        {
-          employeeId: '000300',
-          employeeName: 'Akio Morishimoto',
-          position: 'Support',
-          day: true,
-          night: true,
-          otDay: true,
-          otNight: true,
-          np: false
-        }
-      ];
-      
-      setTimeout(() => {
-        setAttendanceData(mockData);
-        setLoading(false);
-      }, 1000);
-    } catch (error) {
-      console.error('Error fetching attendance data:', error);
-      setError('Failed to fetch attendance data. Please try again later.');
+      const data = await getAttendanceByDateRange(startDate, endDate, selectedVessel);
+      setAttendanceData(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching attendance data:', err);
+      setError('Failed to load attendance data. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleDateRangeChange = (formattedRange, start, end) => {
-    setDateRange(formattedRange);
-    setStartDate(start);
-    setEndDate(end);
-  };
+  useEffect(() => {
+    fetchAttendanceData();
+  }, [startDate, endDate, selectedVessel]);
 
-  const handleVesselChange = (selectedVessel) => {
-    setVessel(selectedVessel);
+  const handleVesselChange = (vessel) => {
+    setSelectedVessel(vessel);
   };
 
   const handleEdit = (record) => {
@@ -106,15 +57,14 @@ const AttendancePage = () => {
 
   const handleSaveAttendance = async (updatedRecord) => {
     try {
-      // In a production environment, uncomment the following line
-      // await updateAttendance(updatedRecord.employeeId, startDate, updatedRecord);
+      await updateAttendance(updatedRecord.employeeId, startDate, updatedRecord);
       
-      // For demo purposes, we'll just update the state
       const updatedData = attendanceData.map(record => 
         record.employeeId === updatedRecord.employeeId ? updatedRecord : record
       );
       
       setAttendanceData(updatedData);
+      setDialogOpen(false);
       
       setNotification({
         open: true,
@@ -138,10 +88,22 @@ const AttendancePage = () => {
   return (
     <Layout title="Attendance">
       <Box className="attendance-page">
-        <DateRangeSelector 
-          onDateRangeChange={handleDateRangeChange} 
-          onVesselChange={handleVesselChange}
-        />
+        <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Start Date"
+              value={startDate}
+              onChange={setStartDate}
+              renderInput={(params) => <TextField size="small" {...params} />}
+            />
+            <DatePicker
+              label="End Date"
+              value={endDate}
+              onChange={setEndDate}
+              renderInput={(params) => <TextField size="small" {...params} />}
+            />
+          </LocalizationProvider>
+        </Box>
         
         {loading ? (
           <Loading message="Loading attendance data..." />
@@ -150,8 +112,11 @@ const AttendancePage = () => {
         ) : (
           <AttendanceTable 
             attendanceData={attendanceData} 
-            dateRange={dateRange}
+            dateRange={`${format(startDate, 'dd/MM/yyyy')} - ${format(endDate, 'dd/MM/yyyy')}`}
             onEdit={handleEdit}
+            vessels={vessels}
+            selectedVessel={selectedVessel}
+            onVesselChange={handleVesselChange}
           />
         )}
         

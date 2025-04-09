@@ -12,24 +12,17 @@ axios.defaults.headers.common = {
 // Login user
 export const login = async (email, password) => {
   try {
-    console.log('Attempting login...');
-    const response = await axios.post('/auth/login', {
-      email,
-      password
-    });
+    const response = await axios.post('/auth/login', { email, password });
+    const { token, user } = response.data;
     
-    if (response.data.success) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      
-      // Set token in axios defaults for subsequent requests
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-    }
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     
-    return response.data;
+    return { success: true, user };
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
-    throw error;
+    throw error.response?.data || { message: 'An error occurred during login' };
   }
 };
 
@@ -47,17 +40,13 @@ export const logout = () => {
 };
 
 // Get current user
-export const getCurrentUser = () => {
+export const getUser = () => {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
 };
 
-// Get auth header
-export const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : ''
-    }
-  };
-}; 
+// Initialize auth header if token exists
+const token = localStorage.getItem('token');
+if (token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+} 

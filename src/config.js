@@ -1,6 +1,7 @@
-// API configuration
+const API_BASE_URL = window.env?.API_URL || 'http://localhost:5000/api';
+
 const config = {
-  API_BASE_URL: 'http://vk4k4s04wcocgc8kkwo84k00.88.198.171.23.sslip.io/api',
+  API_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -8,5 +9,4 @@ const config = {
   }
 };
 
-// Export configuration
 export default config; 
