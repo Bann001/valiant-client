@@ -33,12 +33,12 @@ const AttendancePage = () => {
       }
       
       const params = {
-        date: new Date(selectedDate).toISOString(),
-        status: selectedStatus === 'all' ? undefined : selectedStatus,
-        vessel: selectedVessel === 'all' ? undefined : selectedVessel
+        date: selectedDate instanceof Date ? selectedDate : new Date(selectedDate),
+        vessel: selectedVessel === 'all' ? undefined : selectedVessel,
+        status: selectedStatus === 'all' ? undefined : selectedStatus
       };
       
-      const data = await getAttendanceByDateRange(params.date, params.date, params.vessel, params.status);
+      const data = await getAttendanceByDateRange(params.date, params.vessel, params.status);
       setAttendanceData(data);
       setError(null);
     } catch (err) {

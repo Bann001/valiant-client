@@ -4,11 +4,10 @@ import config from '../config';
 const API_URL = `${config.API_BASE_URL}/attendance`;
 
 // Get attendance records by date range and vessel
-export const getAttendanceByDateRange = async (startDate, endDate, vessel = '', status = '') => {
+export const getAttendanceByDateRange = async (date, vessel = '', status = '') => {
   try {
     const params = {
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString()
+      date: date instanceof Date ? date.toISOString() : new Date(date).toISOString()
     };
     
     if (vessel) {
