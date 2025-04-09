@@ -9,6 +9,16 @@ axios.defaults.headers.common = {
   ...config.headers
 };
 
+// Get auth header for requests
+export const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+};
+
 // Login user
 export const login = async (email, password) => {
   try {
