@@ -15,8 +15,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log('Authorization header set with token');
     } else {
       delete axios.defaults.headers.common['Authorization'];
+      console.log('Authorization header removed');
     }
   }, [token]);
 
@@ -25,10 +27,13 @@ export const AuthProvider = ({ children }) => {
     const loadUser = async () => {
       if (token) {
         try {
-          const res = await axios.get(`${config.API_BASE_URL}/users/me`);
+          console.log('Loading user data with token:', token);
+          const res = await axios.get(`${config.API_BASE_URL}/auth/me`);
+          console.log('User data loaded:', res.data);
           setUser(res.data.data);
           setIsAuthenticated(true);
         } catch (err) {
+          console.error('Error loading user:', err);
           localStorage.removeItem('token');
           setToken(null);
           setUser(null);
@@ -46,26 +51,24 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
+      setError(null);
       console.log('Attempting login with API URL:', `${config.API_BASE_URL}/auth/login`);
       const res = await axios.post(`${config.API_BASE_URL}/auth/login`, {
         email,
         password
-      }, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
       });
-
-      localStorage.setItem('token', res.data.token);
-      setToken(res.data.token);
-      setError(null);
-      return true;
+      console.log('Login response:', res.data);
+      
+      const { token, user } = res.data;
+      localStorage.setItem('token', token);
+      setToken(token);
+      setUser(user);
+      setIsAuthenticated(true);
+      return { success: true };
     } catch (err) {
-      console.error('Login error:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Invalid credentials');
-      return false;
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || 'Login failed');
+      return { success: false, error: err.response?.data?.message || 'Login failed' };
     } finally {
       setLoading(false);
     }
