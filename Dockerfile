@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# Delete package-lock.json if it exists and run a fresh install
+RUN rm -f package-lock.json && npm install
 
 COPY . .
 
