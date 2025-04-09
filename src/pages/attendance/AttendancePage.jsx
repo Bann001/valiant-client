@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Box, Alert, Snackbar, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,7 +23,7 @@ const AttendancePage = () => {
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const vessels = ['Vessel 1', 'Vessel 2', 'Vessel 3']; // Replace with actual vessel data
 
-  const fetchAttendanceData = async () => {
+  const fetchAttendanceData = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getAttendanceByDateRange(startDate, endDate, selectedVessel);
@@ -35,11 +35,11 @@ const AttendancePage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [startDate, endDate, selectedVessel]);
 
   useEffect(() => {
     fetchAttendanceData();
-  }, [startDate, endDate, selectedVessel]);
+  }, [fetchAttendanceData]);
 
   const handleVesselChange = (vessel) => {
     setSelectedVessel(vessel);
