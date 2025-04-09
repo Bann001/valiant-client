@@ -15,27 +15,30 @@ const AttendancePage = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedVessel, setSelectedVessel] = useState('all');
   const [editRecord, setEditRecord] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const vessels = ['Vessel 1', 'Vessel 2', 'Vessel 3']; // Replace with actual vessel data
+  const employeeStatuses = ['all', 'Active', 'On Leave', 'Terminated'];
 
   const fetchAttendanceData = useCallback(async () => {
     try {
       setLoading(true);
-      // Add null checks and ensure dates are valid
-      if (!startDate || !endDate) {
-        setError('Please select valid dates');
+      if (!selectedDate) {
+        setError('Please select a date');
         return;
       }
+      
       const params = {
-        startDate: new Date(startDate).toISOString(),
-        endDate: new Date(endDate).toISOString()
+        date: new Date(selectedDate).toISOString(),
+        status: selectedStatus === 'all' ? undefined : selectedStatus,
+        vessel: selectedVessel === 'all' ? undefined : selectedVessel
       };
-      const data = await getAttendanceByDateRange(params.startDate, params.endDate, selectedVessel);
+      
+      const data = await getAttendanceByDateRange(params.date, params.date, params.vessel, params.status);
       setAttendanceData(data);
       setError(null);
     } catch (err) {
@@ -44,11 +47,15 @@ const AttendancePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [startDate, endDate, selectedVessel]);
+  }, [selectedDate, selectedStatus, selectedVessel]);
 
   useEffect(() => {
     fetchAttendanceData();
   }, [fetchAttendanceData]);
+
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+  };
 
   const handleVesselChange = (vessel) => {
     setSelectedVessel(vessel);
@@ -66,7 +73,7 @@ const AttendancePage = () => {
 
   const handleSaveAttendance = async (updatedRecord) => {
     try {
-      await updateAttendance(updatedRecord.employeeId, startDate, updatedRecord);
+      await updateAttendance(updatedRecord.employeeId, selectedDate, updatedRecord);
       
       const updatedData = attendanceData.map(record => 
         record.employeeId === updatedRecord.employeeId ? updatedRecord : record
@@ -97,25 +104,48 @@ const AttendancePage = () => {
   return (
     <Layout title="Attendance">
       <Box className="attendance-page">
-        <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+        <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              label="Start Date"
-              value={startDate}
+              label="Select Date"
+              value={selectedDate}
               onChange={(newValue) => {
-                setStartDate(newValue || new Date());
-              }}
-              slotProps={{ textField: { size: "small" } }}
-            />
-            <DatePicker
-              label="End Date"
-              value={endDate}
-              onChange={(newValue) => {
-                setEndDate(newValue || new Date());
+                setSelectedDate(newValue || new Date());
               }}
               slotProps={{ textField: { size: "small" } }}
             />
           </LocalizationProvider>
+          
+          <TextField
+            select
+            label="Employee Status"
+            value={selectedStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            size="small"
+            sx={{ minWidth: 150 }}
+          >
+            {employeeStatuses.map((status) => (
+              <option key={status} value={status}>
+                {status === 'all' ? 'All Statuses' : status}
+              </option>
+            ))}
+          </TextField>
+
+          <TextField
+            select
+            label="Vessel"
+            value={selectedVessel}
+            onChange={(e) => handleVesselChange(e.target.value)}
+            size="small"
+            sx={{ minWidth: 150 }}
+          >
+            <option value="all">All Vessels</option>
+            {vessels.map((vessel) => (
+              <option key={vessel} value={vessel}>
+                {vessel}
+              </option>
+            ))}
+          </TextField>
         </Box>
         
         {loading ? (
@@ -125,7 +155,7 @@ const AttendancePage = () => {
         ) : (
           <AttendanceTable 
             attendanceData={attendanceData} 
-            dateRange={`${format(startDate, 'dd/MM/yyyy')} - ${format(endDate, 'dd/MM/yyyy')}`}
+            dateRange={format(selectedDate, 'dd/MM/yyyy')}
             onEdit={handleEdit}
             vessels={vessels}
             selectedVessel={selectedVessel}
