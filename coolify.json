@@ -1,0 +1,9 @@
+{
+  "build": {
+    "command": "npm install --force && npm run build",
+    "output": "dist"
+  },
+  "run": {
+    "command": "npm run preview"
+  }
+} 

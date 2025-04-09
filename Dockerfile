@@ -1,15 +1,16 @@
 # Build stage
-FROM node:18-alpine as build
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY .npmrc ./
 
-# Install dependencies with force to handle version mismatches
-RUN npm install --force
+# Install dependencies
+RUN npm install
 
-# Copy source code
+# Copy source files
 COPY . .
 
 # Build the app
@@ -18,26 +19,14 @@ RUN npm run build
 # Production stage
 FROM nginx:alpine
 
-# Copy built assets from build stage
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy built assets
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy env.sh script
-COPY env.sh /docker-entrypoint.d/40-env.sh
-
-# Make env.sh executable
-RUN chmod +x /docker-entrypoint.d/40-env.sh
-
-# Create .env file directory
-RUN mkdir -p /usr/share/nginx/html
-
-# Set proper permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
-
+# Expose port
 EXPOSE 80
 
-# Use the default nginx Docker entrypoint which will run our env.sh script
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"] 
