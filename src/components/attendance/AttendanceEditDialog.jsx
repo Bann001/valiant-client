@@ -10,7 +10,10 @@ import {
   FormControlLabel,
   Checkbox,
   Grid,
-  Divider
+  Divider,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import './AttendanceEditDialog.css';
 
@@ -20,9 +23,16 @@ const AttendanceEditDialog = ({ open, onClose, record, onSave }) => {
     night: false,
     otDay: false,
     otNight: false,
-    np: false
+    np: false,
+    status: 'Active'
   });
   
+  const statusOptions = [
+    { value: 'Active', label: 'Present' },
+    { value: 'On Leave', label: 'On Leave' },
+    { value: 'Terminated', label: 'Terminated' }
+  ];
+
   useEffect(() => {
     if (record) {
       setFormData({
@@ -30,16 +40,18 @@ const AttendanceEditDialog = ({ open, onClose, record, onSave }) => {
         night: record.night || false,
         otDay: record.otDay || false,
         otNight: record.otNight || false,
-        np: record.np || false
+        np: record.np || false,
+        status: record.status || 'Active'
       });
     }
   }, [record]);
   
   const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.checked
-    });
+    const { name, value, type, checked } = event.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
   
   const handleSave = () => {
@@ -94,6 +106,33 @@ const AttendanceEditDialog = ({ open, onClose, record, onSave }) => {
               <Typography variant="body1">
                 {record.position}
               </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={formData.status}
+                  onChange={handleChange}
+                  name="status"
+                  label="Status"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: '#ccc'
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#999'
+                      }
+                    }
+                  }}
+                >
+                  {statusOptions.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </Box>
@@ -231,4 +270,4 @@ const AttendanceEditDialog = ({ open, onClose, record, onSave }) => {
   );
 };
 
-export default AttendanceEditDialog; 
+export default AttendanceEditDialog;
