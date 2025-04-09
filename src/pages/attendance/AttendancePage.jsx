@@ -26,7 +26,16 @@ const AttendancePage = () => {
   const fetchAttendanceData = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await getAttendanceByDateRange(startDate, endDate, selectedVessel);
+      // Add null checks and ensure dates are valid
+      if (!startDate || !endDate) {
+        setError('Please select valid dates');
+        return;
+      }
+      const params = {
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString()
+      };
+      const data = await getAttendanceByDateRange(params.startDate, params.endDate, selectedVessel);
       setAttendanceData(data);
       setError(null);
     } catch (err) {
@@ -93,14 +102,18 @@ const AttendancePage = () => {
             <DatePicker
               label="Start Date"
               value={startDate}
-              onChange={setStartDate}
-              renderInput={(params) => <TextField size="small" {...params} />}
+              onChange={(newValue) => {
+                setStartDate(newValue || new Date());
+              }}
+              slotProps={{ textField: { size: "small" } }}
             />
             <DatePicker
               label="End Date"
               value={endDate}
-              onChange={setEndDate}
-              renderInput={(params) => <TextField size="small" {...params} />}
+              onChange={(newValue) => {
+                setEndDate(newValue || new Date());
+              }}
+              slotProps={{ textField: { size: "small" } }}
             />
           </LocalizationProvider>
         </Box>
